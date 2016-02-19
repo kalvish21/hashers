@@ -5,6 +5,7 @@
 
 var assert = require('assert');
 var bcrypt = require('bcrypt');
+var crypt = require('crypt3');
 var crypto = require('crypto');
 var md5 = require('md5');
 var sha1 = require('sha1');
@@ -214,7 +215,7 @@ function UnsaltedSHA1PasswordHasher() {
 
     this.encode = function(password, salt) {
         var hash_password = sha1(password + salt);
-        return this.algorithm + "$" + hash_password;
+        return "sha1$$" + hash_password;
     }
 
     this.verify = function(password, hash_password) {
@@ -233,10 +234,13 @@ function UnsaltedMD5PasswordHasher() {
 
     this.encode = function(password, salt) {
         var hash_password = md5(password + salt);
-        return this.algorithm + "$" + hash_password;
+        return hash_password;
     }
 
     this.verify = function(password, hash_password) {
+        if (hash_password.startsWith("md5$$") && hash_password.length == 37) {
+            hash_password = hash_password.substring(5, 37);
+        }
         var compare = this.encode(password, '');
         return compare == hash_password;
     }
@@ -251,12 +255,13 @@ function CryptPasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = md5(password + salt);
-        return this.algorithm + "$" + hash_password;
+        var hash_password = crypt(password, salt);
+        return this.algorithm + "$$" + hash_password;
     }
 
     this.verify = function(password, hash_password) {
-        var compare = this.encode(password, '');
+        var parts = hash_password.split('$');
+        var compare = this.encode(password, parts[2]);
         return compare == hash_password;
     }
 }
