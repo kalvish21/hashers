@@ -276,10 +276,3 @@ function generateRandomString(length) {
 
 
 
-var h = new UnsaltedSHA1PasswordHasher();
-var hash1 = h.encode("siya", h.salt());
-var hash2 = h.encode("siya", "");
-console.log(h.verify("siya", hash1));
-console.log(h.verify("siya", hash2));
-
-
