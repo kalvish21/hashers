@@ -39,6 +39,9 @@ function PBKDF2PasswordHasher() {
         return parseInt(parts[1]) != this.iterations;
     }
 
+    // Below code is from node-pbkdf2
+    //
+    // https://www.npmjs.com/package/node-pbkdf2
     function pbkdf2(key, salt, iterations, dkLen) {
         var hLen = 32;
         assert(dkLen <= (Math.pow(2, 32) - 1) * hLen, 'requested key length too long');
