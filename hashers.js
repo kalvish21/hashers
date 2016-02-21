@@ -7,9 +7,6 @@ var assert = require('assert');
 var bcrypt = require('bcrypt');
 var crypt = require('crypt3');
 var crypto = require('crypto');
-var md5 = require('md5');
-var sha1 = require('sha1');
-var sha256 = require('sha256');
 
 
 function PBKDF2PasswordHasher() {
@@ -125,14 +122,15 @@ function BCryptSHA256PasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        password = sha256(password);
+        password = crypto.createHash('sha256').update(password).digest("hex");
         var key = bcrypt.hashSync(password, salt);
         return this.algorithm + "$" + key;
     }
 
     this.verify = function(password, hash_password) {
         hash_password = hash_password.substring(this.algorithm.length + 1, hash_password.length);
-        return bcrypt.compareSync(sha256(password), hash_password);
+        var shapassword = crypto.createHash('sha256').update(password).digest("hex");
+        return bcrypt.compareSync(shapassword, hash_password);
     }
 
     this.mustUpdate = function (hash_password) {
@@ -176,7 +174,7 @@ function SHA1PasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = sha1(password + salt);
+        var hash_password = crypto.createHash('sha1').update(password + salt).digest("hex");
         return this.algorithm + "$" + salt + "$" + hash_password;
     }
 
@@ -196,7 +194,7 @@ function MD5PasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = md5(password + salt);
+        var hash_password = crypto.createHash('md5').update(password + salt).digest("hex");
         return this.algorithm + "$" + salt + "$" + hash_password;
     }
 
@@ -217,7 +215,7 @@ function UnsaltedSHA1PasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = sha1(password + salt);
+        var hash_password = crypto.createHash('sha1').update(password + salt).digest("hex");
         return "sha1$$" + hash_password;
     }
 
@@ -236,7 +234,7 @@ function UnsaltedMD5PasswordHasher() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = md5(password + salt);
+        var hash_password = crypto.createHash('md5').update(password + salt).digest("hex");
         return hash_password;
     }
 
