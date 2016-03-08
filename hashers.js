@@ -31,7 +31,7 @@ function PBKDF2PasswordHasher() {
         return value == parts[3];
     }
 
-    this.mustUpdate = function (hash_password) {
+    this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
         return parseInt(parts[1]) != this.iterations;
     }
@@ -100,7 +100,7 @@ function PBKDF2SHA1PasswordHasher() {
         return value == parts[3];
     }
 
-    this.mustUpdate = function (hash_password) {
+    this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
         return parseInt(parts[1]) != this.iterations;
     }
@@ -133,7 +133,7 @@ function BCryptSHA256PasswordHasher() {
         return bcrypt.compareSync(shapassword, hash_password);
     }
 
-    this.mustUpdate = function (hash_password) {
+    this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
         return parseInt(parts[3]) != this.iterations;
     }
@@ -159,7 +159,7 @@ function BCryptPasswordHasher() {
         return bcrypt.compareSync(password, hash_password);
     }
 
-    this.mustUpdate = function (hash_password) {
+    this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
         return parseInt(parts[3]) != this.iterations;
     }
@@ -183,6 +183,10 @@ function SHA1PasswordHasher() {
         var compare = this.encode(password, parts[1]);
         return compare == hash_password;
     }
+
+    this.mustUpdate = function(hash_password) {
+        return false;
+    }
 }
 
 
@@ -203,8 +207,11 @@ function MD5PasswordHasher() {
         var compare = this.encode(password, parts[1]);
         return compare == hash_password;
     }
-}
 
+    this.mustUpdate = function(hash_password) {
+        return false;
+    }
+}
 
 
 function UnsaltedSHA1PasswordHasher() {
@@ -222,6 +229,10 @@ function UnsaltedSHA1PasswordHasher() {
     this.verify = function(password, hash_password) {
         var compare = this.encode(password, '');
         return compare == hash_password;
+    }
+
+    this.mustUpdate = function(hash_password) {
+        return false;
     }
 }
 
@@ -245,6 +256,10 @@ function UnsaltedMD5PasswordHasher() {
         var compare = this.encode(password, '');
         return compare == hash_password;
     }
+
+    this.mustUpdate = function(hash_password) {
+        return false;
+    }
 }
 
 
@@ -264,6 +279,10 @@ function CryptPasswordHasher() {
         var parts = hash_password.split('$');
         var compare = this.encode(password, parts[2]);
         return compare == hash_password;
+    }
+
+    this.mustUpdate = function(hash_password) {
+        return false;
     }
 }
 
