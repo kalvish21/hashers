@@ -3,7 +3,6 @@
  */
 
 
-var assert = require('assert');
 var bcrypt = require('bcrypt');
 var crypt = require('crypt3');
 var crypto = require('crypto');
@@ -41,10 +40,6 @@ function PBKDF2PasswordHasher() {
     // https://www.npmjs.com/package/node-pbkdf2
     function pbkdf2(key, salt, iterations, dkLen) {
         var hLen = 32;
-        assert(dkLen <= (Math.pow(2, 32) - 1) * hLen, 'requested key length too long');
-        assert(typeof key == 'string' || Buffer.isBuffer(key), 'key must be a string or buffer');
-        assert(typeof salt == 'string' || Buffer.isBuffer(salt), 'key must be a string or buffer');
-
         if (typeof key == 'string') key = new Buffer(key);
         if (typeof salt == 'string') salt = new Buffer(salt);
 

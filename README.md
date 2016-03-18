@@ -22,5 +22,10 @@ console.log(h.verify("password", hash1)); // returns true
 console.log(h.verify("wrong_password", hash1)); // returns false
 ```
 
+# Installation
+```ssh
+npm install hashers
+```
+
 Similar approach to the above code sample can be used for all the other algorithms.
 
