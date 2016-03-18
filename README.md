@@ -28,5 +28,5 @@ Similar approach to the above code sample can be used for all the other algorith
 
 # Installation
 ```ssh
-npm install hashers
+npm install node-django-hashers
 ```
