@@ -8,7 +8,7 @@ var crypt = require('crypt3');
 var crypto = require('crypto');
 
 
-function PBKDF2PasswordHasher() {
+module.exports.PBKDF2PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha256";
     this.iterations = 24000;
     this.len = 32;
@@ -73,7 +73,7 @@ function PBKDF2PasswordHasher() {
 }
 
 
-function PBKDF2SHA1PasswordHasher() {
+module.exports.PBKDF2SHA1PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha1";
     this.iterations = 24000;
     this.len = 20;
@@ -107,7 +107,7 @@ function PBKDF2SHA1PasswordHasher() {
 }
 
 
-function BCryptSHA256PasswordHasher() {
+module.exports.BCryptSHA256PasswordHasher = function() {
     this.algorithm = "bcrypt_sha256";
     this.iterations = 12;
     this.len = 32;
@@ -135,7 +135,7 @@ function BCryptSHA256PasswordHasher() {
 }
 
 
-function BCryptPasswordHasher() {
+module.exports.BCryptPasswordHasher = function() {
     this.algorithm = "bcrypt";
     this.iterations = 12;
     this.len = 32;
@@ -161,7 +161,7 @@ function BCryptPasswordHasher() {
 }
 
 
-function SHA1PasswordHasher() {
+module.exports.SHA1PasswordHasher = function() {
     this.algorithm = "sha1";
 
     this.salt = function() {
@@ -185,7 +185,7 @@ function SHA1PasswordHasher() {
 }
 
 
-function MD5PasswordHasher() {
+module.exports.MD5PasswordHasher = function() {
     this.algorithm = "md5";
 
     this.salt = function() {
@@ -209,7 +209,7 @@ function MD5PasswordHasher() {
 }
 
 
-function UnsaltedSHA1PasswordHasher() {
+module.exports.UnsaltedSHA1PasswordHasher = function() {
     this.algorithm = "unsalted_sha1";
 
     this.salt = function() {
@@ -232,7 +232,7 @@ function UnsaltedSHA1PasswordHasher() {
 }
 
 
-function UnsaltedMD5PasswordHasher() {
+module.exports.UnsaltedMD5PasswordHasher = function() {
     this.algorithm = "unsalted_md5";
 
     this.salt = function() {
@@ -258,7 +258,7 @@ function UnsaltedMD5PasswordHasher() {
 }
 
 
-function CryptPasswordHasher() {
+module.exports.CryptPasswordHasher = function() {
     this.algorithm = "crypt";
 
     this.salt = function() {
