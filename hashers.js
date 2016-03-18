@@ -227,7 +227,7 @@ function UnsaltedSHA1PasswordHasher() {
     }
 
     this.verify = function(password, hash_password) {
-        var compare = this.encode(password, '');
+        var compare = this.encode(password, this.salt());
         return compare == hash_password;
     }
 
@@ -253,7 +253,7 @@ function UnsaltedMD5PasswordHasher() {
         if (hash_password.startsWith("md5$$") && hash_password.length == 37) {
             hash_password = hash_password.substring(5, 37);
         }
-        var compare = this.encode(password, '');
+        var compare = this.encode(password, this.salt());
         return compare == hash_password;
     }
 
