@@ -8,6 +8,21 @@ var crypt = require('crypt3');
 var crypto = require('crypto');
 
 
+module.exports.mustUpdateHashedPassword = function(hash_password, default_algorithm) {
+    var algorithm = this.identifyHasher(hash_password);
+    if (algorithm == null) {
+        throw "Could not identify the hashing algorithm!";
+    }
+
+    if (algorithm == default_algorithm) {
+        var hash_alg = this.getHasher(algorithm);
+        return hash_alg.mustUpdate(hash_password);
+    }
+
+    return true;
+}
+
+
 module.exports.identifyHasher = function(hash_password) {
     var algorithm = null;
     if (hash_password.length == 32 && hash_password.contains("$") == false) {
@@ -27,7 +42,7 @@ module.exports.getHasher = function(algorithm) {
     if (algorithm == null) {
         return null;
     }
-    
+
     switch (algorithm) {
         case "pbkdf2_sha256": {
             return new module.exports.PBKDF2PasswordHasher();

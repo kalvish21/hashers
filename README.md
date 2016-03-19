@@ -26,7 +26,7 @@ console.log(h.verify("password", hash1)); // returns true
 console.log(h.verify("wrong_password", hash1)); // returns false
 ```
 
-You can also get a hashed password, identify the hashing algorithm, and verify the password as follows:
+You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for PBKDF2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
 
 ```javascript
 var hashers = require('node-django-hashers');
@@ -38,7 +38,22 @@ console.log(hash_algorithm.verify("password", hash_password)); // returns true
 console.log(hash_algorithm.verify("wrong_password", hash_password)); // returns false
 ```
 
-Similar approach to the above code sample can be used for all the other algorithms.
+A good practice is to verify if the password is using the default algorithm, and update the password if necessary on the database. Every hashing algorithm has an algorithm name. You can pass it in and check if updates are required:
+
+```javascript
+var hashers = require('node-django-hashers');
+
+var hash_password = "286755fad04869ca523320acce0dc6a4"; // "password" in md5
+var mustUpdate = hashers.mustUpdateHashedPassword(hash_password, "pbkdf2_sha256");
+// mustUpdate is true since we do not want MD5 hash passwords, pbkdf2_sha256 is the default
+
+var hash_algorithm = hashers.getHasher("pbkdf2_sha256");
+// update the users password in the database by re encoding the password here
+
+var hash_password = h.encode("password", h.salt());
+```
+
+
 
 # Installation
 ```ssh
