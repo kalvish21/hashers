@@ -8,6 +8,70 @@ var crypt = require('crypt3');
 var crypto = require('crypto');
 
 
+module.exports.identifyHasher = function(hash_password) {
+    var algorithm = null;
+    if (hash_password.length == 32 && hash_password.contains("$") == false) {
+        algorithm = "unsalted_md5";
+    } else if (hash_password.length == 37 && hash_password.startsWith("md5$$")) {
+        algorithm = "unsalted_md5";
+    } else if (hash_password.length == 46 && hash_password.startsWith("sha1$$")) {
+        algorithm = 'unsalted_sha1';
+    } else {
+        algorithm = hash_password.split('$')[0];
+    }
+    return algorithm;
+}
+
+
+module.exports.getHasher = function(algorithm) {
+    if (algorithm == null) {
+        return null;
+    }
+    
+    switch (algorithm) {
+        case "pbkdf2_sha256": {
+            return new module.exports.PBKDF2PasswordHasher();
+        }
+
+        case "pbkdf2_sha1": {
+            return new module.exports.PBKDF2SHA1PasswordHasher();
+        }
+
+        case "bcrypt_sha256": {
+            return new module.exports.BCryptSHA256PasswordHasher();
+        }
+
+        case "bcrypt": {
+            return new module.exports.BCryptPasswordHasher();
+        }
+
+        case "sha1": {
+            return new module.exports.SHA1PasswordHasher();
+        }
+
+        case "md5": {
+            return new module.exports.MD5PasswordHasher();
+        }
+
+        case "unsalted_sha1": {
+            return new module.exports.UnsaltedSHA1PasswordHasher();
+        }
+
+        case "unsalted_md5": {
+            return new module.exports.UnsaltedMD5PasswordHasher();
+        }
+
+        case "crypt": {
+            return new module.exports.CryptPasswordHasher();
+        }
+
+        default: {
+            return null;
+        }
+    }
+}
+
+
 module.exports.PBKDF2PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha256";
     this.iterations = 24000;
