@@ -45,39 +45,39 @@ module.exports.getHasher = function(algorithm) {
 
     switch (algorithm) {
         case "pbkdf2_sha256": {
-            return new module.exports.PBKDF2PasswordHasher();
+            return new this.PBKDF2PasswordHasher();
         }
 
         case "pbkdf2_sha1": {
-            return new module.exports.PBKDF2SHA1PasswordHasher();
+            return new this.PBKDF2SHA1PasswordHasher();
         }
 
         case "bcrypt_sha256": {
-            return new module.exports.BCryptSHA256PasswordHasher();
+            return new this.BCryptSHA256PasswordHasher();
         }
 
         case "bcrypt": {
-            return new module.exports.BCryptPasswordHasher();
+            return new this.BCryptPasswordHasher();
         }
 
         case "sha1": {
-            return new module.exports.SHA1PasswordHasher();
+            return new this.SHA1PasswordHasher();
         }
 
         case "md5": {
-            return new module.exports.MD5PasswordHasher();
+            return new this.MD5PasswordHasher();
         }
 
         case "unsalted_sha1": {
-            return new module.exports.UnsaltedSHA1PasswordHasher();
+            return new this.UnsaltedSHA1PasswordHasher();
         }
 
         case "unsalted_md5": {
-            return new module.exports.UnsaltedMD5PasswordHasher();
+            return new this.UnsaltedMD5PasswordHasher();
         }
 
         case "crypt": {
-            return new module.exports.CryptPasswordHasher();
+            return new this.CryptPasswordHasher();
         }
 
         default: {
