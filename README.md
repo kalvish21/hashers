@@ -31,7 +31,9 @@ You can also get a hashed password, identify the hashing algorithm, and verify t
 ```javascript
 var hashers = require('node-django-hashers');
 
+// Hashed password from Django
 var hash_password = "pbkdf2_sha256$24000$EqklNbs3N4lg$COOpqEopVFNhBr20UOtUIm63RGYnX/0efMcNAEOFo50=";
+
 var hash_name = hashers.identifyHasher(hash_password);
 var hash_algorithm = hashers.getHasher(hash_name);
 console.log(hash_algorithm.verify("password", hash_password)); // returns true
