@@ -1,6 +1,6 @@
 {
   "name": "node-django-hashers",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "crypto": "^0.0.3"
