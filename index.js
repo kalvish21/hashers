@@ -4,7 +4,6 @@
 
 
 var bcrypt = require('bcrypt');
-var crypt = require('crypt3');
 var crypto = require('crypto');
 
 

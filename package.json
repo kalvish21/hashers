@@ -3,7 +3,6 @@
   "version": "1.0.8",
   "dependencies": {
     "bcrypt": "^0.8.5",
-    "crypt3": "^0.2.0",
     "crypto": "^0.0.3"
   },
   "description": "All password hashing algorithms for Django implemented in javascript for nodejs projects.",
