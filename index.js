@@ -3,8 +3,7 @@
  */
 
 
-var bcrypt = require('bcrypt');
-var crypt = require('crypt3');
+var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 
 
