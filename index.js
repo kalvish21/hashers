@@ -102,7 +102,15 @@ module.exports.PBKDF2PasswordHasher = function() {
     }
 
     this.verify = function(password, hash_password) {
+        if (!hash_password) {
+          return false;
+        }
         var parts = hash_password.split('$');
+
+        if (parts.length !== 4) {
+          return false
+        }
+
         var iterations = parseInt(parts[1]);
         var salt = parts[2];
         var value = pbkdf2(password, salt, iterations, this.len).toString('base64');
