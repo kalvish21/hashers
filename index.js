@@ -255,7 +255,7 @@ module.exports.SHA1PasswordHasher = function() {
     }
 
     this.encode = function(password, salt) {
-        var hash_password = crypto.createHash('sha1').update(password + salt).digest("hex");
+        var hash_password = crypto.createHash('sha1').update(salt + password).digest("hex");
         return this.algorithm + "$" + salt + "$" + hash_password;
     }
 
