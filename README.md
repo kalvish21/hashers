@@ -21,9 +21,7 @@ A simple example just verifying and creating Django compatible passwords:
 var hashers = require('node-django-hashers');
 
 var h = new hashers.PBKDF2PasswordHasher();
-var hash1 = h.encode("password").then(console.log);
-h.verify("password", hash1).then(console.log); // prints true
-h.verify("wrong_password", hash1).then(console.log); // prints false
+h.encode("password").then(console.log); // prints the hashed password
 ```
 
 You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for PBKDF2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
@@ -32,7 +30,7 @@ You can also get a hashed password, identify the hashing algorithm, and verify t
 var hashers = require('node-django-hashers');
 
 // Hashed password from Django
-var hash_password = "pbkdf2_sha256$24000$EqklNbs3N4lg$COOpqEopVFNhBr20UOtUIm63RGYnX/0efMcNAEOFo50=";
+var hash_password = "argon2$argon2i$v=19$m=512,t=2,p=2$ZGIzQXZXdjlaMjRK$2ecZ6JAld41sKwh9Q8KEyQ";
 
 var hash_name = hashers.identifyHasher(hash_password);
 var hash_algorithm = hashers.getHasher(hash_name);
