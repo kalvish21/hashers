@@ -1,12 +1,15 @@
 {
   "name": "node-django-hashers",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "dependencies": {
+    "argon2-ffi": "^1.1.0",
     "bcryptjs": "^2.3.0",
-    "crypto": "^0.0.3"
+    "bluebird": "^3.5.1",
+    "crypto": "^0.0.3",
+    "node-gyp": "^3.7.0"
   },
   "description": "All password hashing algorithms for Django implemented in javascript for nodejs projects.",
-  "main": "hashers.js",
+  "main": "index.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,7 +24,7 @@
     "hashing"
   ],
   "author": "Kalyan Vishnubhatla <kalvish@gmail.com> (https://medium.com/@kalvish)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kalvish21/hashers/issues"
   },

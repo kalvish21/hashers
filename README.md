@@ -11,7 +11,7 @@ All password hashing algorithms for Django implemented in javascript for nodejs 
 6. MD5PasswordHasher
 7. UnsaltedSHA1PasswordHasher
 8. UnsaltedMD5PasswordHasher
-9. CryptPasswordHasher
+9. Argon2PasswordHasher
 
 # Usage
 
@@ -21,9 +21,9 @@ A simple example just verifying and creating Django compatible passwords:
 var hashers = require('node-django-hashers');
 
 var h = new hashers.PBKDF2PasswordHasher();
-var hash1 = h.encode("password", h.salt());
-console.log(h.verify("password", hash1)); // returns true
-console.log(h.verify("wrong_password", hash1)); // returns false
+var hash1 = h.encode("password").then(console.log);
+h.verify("password", hash1).then(console.log); // prints true
+h.verify("wrong_password", hash1).then(console.log); // prints false
 ```
 
 You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for PBKDF2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
@@ -36,8 +36,8 @@ var hash_password = "pbkdf2_sha256$24000$EqklNbs3N4lg$COOpqEopVFNhBr20UOtUIm63RG
 
 var hash_name = hashers.identifyHasher(hash_password);
 var hash_algorithm = hashers.getHasher(hash_name);
-console.log(hash_algorithm.verify("password", hash_password)); // returns true
-console.log(hash_algorithm.verify("wrong_password", hash_password)); // returns false
+hash_algorithm.verify("password", hash_password).then(console.log); // prints true
+hash_algorithm.verify("wrong_password", hash_password).then(console.log); // prints false
 ```
 
 A good practice is to verify if the password is using the default algorithm, and update the password if necessary on the database. Every hashing algorithm has an algorithm name. You can pass it in and check if updates are required:
@@ -51,8 +51,6 @@ var mustUpdate = hashers.mustUpdateHashedPassword(hash_password, "pbkdf2_sha256"
 
 var hash_algorithm = hashers.getHasher("pbkdf2_sha256");
 // update the users password in the database by re encoding the password here
-
-var hash_password = h.encode("password", h.salt());
 ```
 
 
