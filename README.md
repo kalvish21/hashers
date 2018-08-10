@@ -27,13 +27,13 @@ h.encode("password").then(console.log); // prints the hashed password
 You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for PBKDF2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
 
 ```javascript
-var hashers = require('node-django-hashers');
+const hashers = require('node-django-hashers');
 
 // Hashed password from Django
-var hash_password = "argon2$argon2i$v=19$m=512,t=2,p=2$ZGIzQXZXdjlaMjRK$2ecZ6JAld41sKwh9Q8KEyQ";
+const hash_password = "argon2$argon2i$v=19$m=512,t=2,p=2$ZGIzQXZXdjlaMjRK$2ecZ6JAld41sKwh9Q8KEyQ";
 
-var hash_name = hashers.identifyHasher(hash_password);
-var hash_algorithm = hashers.getHasher(hash_name);
+const hash_name = hashers.identifyHasher(hash_password);
+const hash_algorithm = hashers.getHasher(hash_name);
 hash_algorithm.verify("password", hash_password).then(console.log); // prints true
 hash_algorithm.verify("wrong_password", hash_password).then(console.log); // prints false
 ```
@@ -41,13 +41,13 @@ hash_algorithm.verify("wrong_password", hash_password).then(console.log); // pri
 A good practice is to verify if the password is using the default algorithm, and update the password if necessary on the database. Every hashing algorithm has an algorithm name. You can pass it in and check if updates are required:
 
 ```javascript
-var hashers = require('node-django-hashers');
+const hashers = require('node-django-hashers');
 
-var hash_password = "286755fad04869ca523320acce0dc6a4"; // "password" in md5
-var mustUpdate = hashers.mustUpdateHashedPassword(hash_password, "pbkdf2_sha256");
+const hash_password = "286755fad04869ca523320acce0dc6a4"; // "password" in md5
+const mustUpdate = hashers.mustUpdateHashedPassword(hash_password, "pbkdf2_sha256");
 // mustUpdate is true since we do not want MD5 hash passwords, pbkdf2_sha256 is the default
 
-var hash_algorithm = hashers.getHasher("pbkdf2_sha256");
+const hash_algorithm = hashers.getHasher("pbkdf2_sha256");
 // update the users password in the database by re encoding the password here
 ```
 

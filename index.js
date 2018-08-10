@@ -3,21 +3,21 @@
  */
 
 
-var bcrypt = require('bcryptjs');
-var crypto = require('crypto');
-var argon2 = require('argon2-ffi').argon2i;
-var Promise = require('bluebird');
-var randomBytes = Promise.promisify(crypto.randomBytes);
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const argon2 = require('argon2-ffi').argon2i;
+const Promise = require('bluebird');
+const randomBytes = Promise.promisify(crypto.randomBytes);
 
 
 module.exports.mustUpdateHashedPassword = function(hash_password, default_algorithm) {
-    var algorithm = this.identifyHasher(hash_password);
+    const algorithm = this.identifyHasher(hash_password);
     if (algorithm == null) {
         throw "Could not identify the hashing algorithm!";
     }
 
-    if (algorithm == default_algorithm) {
-        var hash_alg = this.getHasher(algorithm);
+    if (algorithm === default_algorithm) {
+        const hash_alg = this.getHasher(algorithm);
         return hash_alg.mustUpdate(hash_password);
     }
 
@@ -27,11 +27,11 @@ module.exports.mustUpdateHashedPassword = function(hash_password, default_algori
 
 module.exports.identifyHasher = function(hash_password) {
     var algorithm = null;
-    if (hash_password.length == 32 && hash_password.contains("$") == false) {
+    if (hash_password.length === 32 && hash_password.indexOf("$") === -1) {
         algorithm = "unsalted_md5";
-    } else if (hash_password.length == 37 && hash_password.startsWith("md5$$")) {
+    } else if (hash_password.length === 37 && hash_password.startsWith("md5$$")) {
         algorithm = "unsalted_md5";
-    } else if (hash_password.length == 46 && hash_password.startsWith("sha1$$")) {
+    } else if (hash_password.length === 46 && hash_password.startsWith("sha1$$")) {
         algorithm = 'unsalted_sha1';
     } else {
         algorithm = hash_password.split('$')[0];
