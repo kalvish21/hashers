@@ -18,9 +18,9 @@ All password hashing algorithms for Django implemented in javascript for nodejs 
 A simple example just verifying and creating Django compatible passwords:
 
 ```javascript
-var hashers = require('node-django-hashers');
+const hashers = require('node-django-hashers');
 
-var h = new hashers.PBKDF2PasswordHasher();
+const h = new hashers.PBKDF2PasswordHasher();
 h.encode("password").then(console.log); // prints the hashed password
 ```
 

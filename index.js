@@ -128,7 +128,7 @@ module.exports.PBKDF2PasswordHasher = function() {
 
     this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
-        return parseInt(parts[1]) != this.iterations;
+        return parseInt(parts[1]) !== this.iterations;
     }
 
     // Below code is from node-pbkdf2
@@ -248,17 +248,17 @@ module.exports.PBKDF2SHA1PasswordHasher = function() {
             var iterations = parseInt(parts[1]);
             var salt = parts[2];
             var value = self.pbkdf2(password, salt, iterations, self.len).toString('base64');
-            resolve(value == parts[3]);
+            resolve(value === parts[3]);
         });
     }
 
     this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
-        return parseInt(parts[1]) != this.iterations;
+        return parseInt(parts[1]) !== this.iterations;
     }
 
     this.pbkdf2 = function(key, salt, iterations, dkLen) {
-        var dk = crypto.pbkdf2Sync(key, salt, parseInt(iterations), dkLen, 'sha1');
+        const dk = crypto.pbkdf2Sync(key, salt, parseInt(iterations), dkLen, 'sha1');
         return dk;
     }
 }
@@ -294,7 +294,7 @@ module.exports.BCryptSHA256PasswordHasher = function() {
 
     this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
-        return parseInt(parts[3]) != this.iterations;
+        return parseInt(parts[3]) !== this.iterations;
     }
 }
 
@@ -327,7 +327,7 @@ module.exports.BCryptPasswordHasher = function() {
 
     this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
-        return parseInt(parts[3]) != this.iterations;
+        return parseInt(parts[3]) !== this.iterations;
     }
 }
 
@@ -354,7 +354,7 @@ module.exports.SHA1PasswordHasher = function() {
             var parts = hash_password.split('$');
             var compare = self.algorithm + "$" + parts[1] + "$" +
                 crypto.createHash('sha1').update(parts[1] + password).digest("hex");
-            resolve(compare == hash_password);
+            resolve(compare === hash_password);
         });
     }
 
@@ -448,7 +448,7 @@ module.exports.UnsaltedMD5PasswordHasher = function() {
                 hash_password = hash_password.substring(5, 37);
             }
             var compare = crypto.createHash('md5').update(password + self.salt()).digest("hex");
-            resolve(compare == hash_password);
+            resolve(compare === hash_password);
         });
 
     }
