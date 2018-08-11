@@ -24,7 +24,7 @@ const h = new hashers.PBKDF2PasswordHasher();
 h.encode("password").then(console.log); // prints the hashed password
 ```
 
-You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for PBKDF2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
+You can also get a hashed password, identify the hashing algorithm, and verify the password. The below example is for Argon2PasswordHasher, a similar approach to the above code sample can be used for all the other algorithms.
 
 ```javascript
 const hashers = require('node-django-hashers');
