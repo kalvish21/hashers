@@ -444,7 +444,7 @@ module.exports.UnsaltedMD5PasswordHasher = function() {
     this.verify = function(password, hash_password) {
         var self = this;
         return new Promise(function (resolve, reject) {
-            if (hash_password.startsWith("md5$$") && hash_password.length == 37) {
+            if (hash_password.startsWith("md5$$") && hash_password.length === 37) {
                 hash_password = hash_password.substring(5, 37);
             }
             var compare = crypto.createHash('md5').update(password + self.salt()).digest("hex");
