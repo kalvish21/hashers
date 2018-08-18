@@ -196,7 +196,6 @@ module.exports.Argon2PasswordHasher = function() {
 
     this.verify = function(password, hash_password) {
         hash_password = hash_password.substring(this.algorithm.length, hash_password.length);
-        console.log(hash_password);
         return argon2.verify(hash_password, password)
             .then(function(correct) {
                 return correct;
