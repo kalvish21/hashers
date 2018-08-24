@@ -1,12 +1,11 @@
 {
   "name": "node-django-hashers",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "dependencies": {
     "argon2-ffi": "^1.1.0",
     "assert": "^1.4.1",
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.5.1",
-    "crypto": "^0.0.3",
     "node-gyp": "^3.7.0"
   },
   "description": "All password hashing algorithms for Django implemented in javascript for nodejs projects.",

@@ -102,13 +102,17 @@ module.exports.PBKDF2PasswordHasher = function() {
         var self = this;
         return new Promise(function (resolve, reject) {
             var salt = self.salt();
-            var key = pbkdf2(password, salt, self.iterations, self.len).toString('base64');
-            resolve(self.algorithm + "$" + self.iterations + "$" + salt + "$" + key);
+            crypto.pbkdf2(password, salt, self.iterations, self.len, 'sha256', function (err, derivedKey) {
+                if (err) { return reject(err); }
+                const key = new Buffer(derivedKey, 'binary').toString('base64');
+                resolve(self.algorithm + "$" + self.iterations + "$" + salt + "$" + key);
+            });
         });
     }
 
     this.verify = function(password, hash_password) {
         var self = this;
+
         return new Promise(function (resolve, reject) {
             if (!hash_password) {
                 resolve(false);
@@ -119,52 +123,19 @@ module.exports.PBKDF2PasswordHasher = function() {
                 resolve(false);
             }
 
-            var iterations = parseInt(parts[1]);
-            var salt = parts[2];
-            var value = pbkdf2(password, salt, iterations, self.len).toString('base64');
-            return resolve(value === parts[3]);
+            const iterations = parseInt(parts[1]);
+            const salt = parts[2];
+            const value = parts[3];
+            crypto.pbkdf2(password, salt, iterations, self.len, 'sha256', function (err, derivedKey) {
+                if (err) { return reject(err); }
+                return resolve(new Buffer(derivedKey, 'binary').toString('base64') === value);
+            });
         });
     }
 
     this.mustUpdate = function(hash_password) {
         var parts = hash_password.split('$');
         return parseInt(parts[1]) !== this.iterations;
-    }
-
-    // Below code is from node-pbkdf2
-    //
-    // https://www.npmjs.com/package/node-pbkdf2
-    function pbkdf2(key, salt, iterations, dkLen) {
-        var hLen = 32;
-        if (typeof key == 'string') key = new Buffer(key);
-        if (typeof salt == 'string') salt = new Buffer(salt);
-
-        var DK = new Buffer(dkLen);
-        var T = new Buffer(hLen);
-        var block1 = new Buffer(salt.length + 4);
-
-        var l = Math.ceil(dkLen / hLen);
-        var r = dkLen - (l - 1) * hLen;
-
-        salt.copy(block1, 0, 0, salt.length);
-        for (var i = 1; i <= l; i++) {
-            block1.writeUInt32BE(i, salt.length);
-            var U = crypto.createHmac('sha256', key).update(block1).digest();
-            U.copy(T, 0, 0, hLen);
-
-            for (var j = 1; j < iterations; j++) {
-                U = crypto.createHmac('sha256', key).update(U).digest();
-                for (var k = 0; k < hLen; k++) {
-                    T[k] ^= U[k];
-                }
-            }
-
-            var destPos = (i - 1) * hLen;
-            var len = (i == l ? r : hLen);
-            T.copy(DK, destPos, 0, len);
-        }
-
-        return DK;
     }
 }
 
