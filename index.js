@@ -91,7 +91,7 @@ module.exports.getHasher = function(algorithm) {
 
 module.exports.PBKDF2PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha256";
-    this.iterations = 36000;
+    this.iterations = 120000;
     this.len = 32;
 
     this.salt = function() {
@@ -195,7 +195,7 @@ module.exports.Argon2PasswordHasher = function() {
 
 module.exports.PBKDF2SHA1PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha1";
-    this.iterations = 36000;
+    this.iterations = 120000;
     this.len = 20;
 
     this.salt = function() {
@@ -237,7 +237,6 @@ module.exports.PBKDF2SHA1PasswordHasher = function() {
 module.exports.BCryptSHA256PasswordHasher = function() {
     this.algorithm = "bcrypt_sha256";
     this.iterations = 12;
-    this.len = 32;
 
     this.salt = function() {
         return bcrypt.genSaltSync(this.iterations);
@@ -272,7 +271,6 @@ module.exports.BCryptSHA256PasswordHasher = function() {
 module.exports.BCryptPasswordHasher = function() {
     this.algorithm = "bcrypt";
     this.iterations = 12;
-    this.len = 32;
 
     this.salt = function() {
         return bcrypt.genSaltSync(this.iterations);
