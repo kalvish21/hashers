@@ -89,6 +89,56 @@ module.exports.getHasher = function(algorithm) {
 }
 
 
+module.exports.Argon2PasswordHasher = function() {
+    this.algorithm = "argon2";
+    this.version = 19;
+    this.time_cost = 2;
+    this.memory_cost = 512;
+    this.parallelism_value = 2;
+    this.hash_length = 16;
+
+    this.salt = async function() {
+        return await randomBytes(32)
+    }
+
+    this.encode = async function(password) {
+        const options = {
+            timeCost: this.time_cost,
+            memoryCost: this.memory_cost,
+            parallelism: this.parallelism_value,
+            hashLength: this.hash_length
+        };
+
+        const salt = await this.salt();
+        const hash = await argon2.hash(password, salt, options);
+        return this.algorithm + hash;
+    }
+
+    this.verify = async function(password, hash_password) {
+        hash_password = hash_password.substring(this.algorithm.length, hash_password.length);
+        return await argon2.verify(hash_password, password);
+    }
+
+    this.mustUpdate = function(hash_password) {
+        const parts = hash_password.split('$');
+        if (parts[0] !== this.algorithm) {
+            return true;
+        }
+
+        if (parts[2] !== this.version) {
+            return true;
+        }
+
+        const options = "m=" + this.memory_cost + ",t=" + this.time_cost + ",p=" + this.parallelism_value;
+        if (options !== parts[3]) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
 module.exports.PBKDF2PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha256";
     this.iterations = 120000;
@@ -99,9 +149,9 @@ module.exports.PBKDF2PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
+            const salt = self.salt();
             crypto.pbkdf2(password, salt, self.iterations, self.len, 'sha256', function (err, derivedKey) {
                 if (err) { return reject(err); }
                 const key = new Buffer(derivedKey, 'binary').toString('base64');
@@ -111,13 +161,13 @@ module.exports.PBKDF2PasswordHasher = function() {
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
 
         return new Promise(function (resolve, reject) {
             if (!hash_password) {
                 resolve(false);
             }
-            var parts = hash_password.split('$');
+            const parts = hash_password.split('$');
 
             if (parts.length !== 4) {
                 resolve(false);
@@ -134,61 +184,8 @@ module.exports.PBKDF2PasswordHasher = function() {
     }
 
     this.mustUpdate = function(hash_password) {
-        var parts = hash_password.split('$');
+        const parts = hash_password.split('$');
         return parseInt(parts[1]) !== this.iterations;
-    }
-}
-
-
-module.exports.Argon2PasswordHasher = function() {
-    this.algorithm = "argon2";
-    this.version = 19;
-    this.time_cost = 2;
-    this.memory_cost = 512;
-    this.parallelism_value = 2;
-    this.hash_length = 16;
-
-    this.encode = function(password) {
-        var options = {
-            timeCost: this.time_cost,
-            memoryCost: this.memory_cost,
-            parallelism: this.parallelism_value,
-            hashLength: this.hash_length
-        };
-
-        var self = this;
-        return randomBytes(32).then(function(salt) {
-            return argon2.hash(password, salt, options);
-        })
-            .then(function(hash) {
-                return self.algorithm + hash;
-            });
-    }
-
-    this.verify = function(password, hash_password) {
-        hash_password = hash_password.substring(this.algorithm.length, hash_password.length);
-        return argon2.verify(hash_password, password)
-            .then(function(correct) {
-                return correct;
-            })
-    }
-
-    this.mustUpdate = function(hash_password) {
-        var parts = hash_password.split('$');
-        if (parts[0] !== this.algorithm) {
-            return true;
-        }
-
-        if (parts[2] !== this.version) {
-            return true;
-        }
-
-        var options = "m=" + this.memory_cost + ",t=" + this.time_cost + ",p=" + this.parallelism_value;
-        if (options !== parts[3]) {
-            return true;
-        }
-
-        return false;
     }
 }
 
@@ -203,27 +200,27 @@ module.exports.PBKDF2SHA1PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
-            var key = self.pbkdf2(password, salt, self.iterations, self.len).toString('base64');
+            const salt = self.salt();
+            const key = self.pbkdf2(password, salt, self.iterations, self.len).toString('base64');
             resolve(self.algorithm + "$" + self.iterations + "$" + salt + "$" + key);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var parts = hash_password.split('$');
-            var iterations = parseInt(parts[1]);
-            var salt = parts[2];
-            var value = self.pbkdf2(password, salt, iterations, self.len).toString('base64');
+            const parts = hash_password.split('$');
+            const iterations = parseInt(parts[1]);
+            const salt = parts[2];
+            const value = self.pbkdf2(password, salt, iterations, self.len).toString('base64');
             resolve(value === parts[3]);
         });
     }
 
     this.mustUpdate = function(hash_password) {
-        var parts = hash_password.split('$');
+        const parts = hash_password.split('$');
         return parseInt(parts[1]) !== this.iterations;
     }
 
@@ -243,26 +240,26 @@ module.exports.BCryptSHA256PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
+            const salt = self.salt();
             password = crypto.createHash('sha256').update(password).digest("hex");
-            var key = bcrypt.hashSync(password, salt);
+            const key = bcrypt.hashSync(password, salt);
             resolve(self.algorithm + "$" + key);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
             hash_password = hash_password.substring(self.algorithm.length + 1, hash_password.length);
-            var shapassword = crypto.createHash('sha256').update(password).digest("hex");
+            const shapassword = crypto.createHash('sha256').update(password).digest("hex");
             resolve(bcrypt.compareSync(shapassword, hash_password));
         });
     }
 
     this.mustUpdate = function(hash_password) {
-        var parts = hash_password.split('$');
+        const parts = hash_password.split('$');
         return parseInt(parts[3]) !== this.iterations;
     }
 }
@@ -277,16 +274,16 @@ module.exports.BCryptPasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
-            var key = bcrypt.hashSync(password, salt);
+            const salt = self.salt();
+            const key = bcrypt.hashSync(password, salt);
             resolve(self.algorithm + "$" + key);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
             hash_password = hash_password.substring(self.algorithm.length + 1, hash_password.length);
             resolve(bcrypt.compareSync(password, hash_password));
@@ -294,7 +291,7 @@ module.exports.BCryptPasswordHasher = function() {
     }
 
     this.mustUpdate = function(hash_password) {
-        var parts = hash_password.split('$');
+        const parts = hash_password.split('$');
         return parseInt(parts[3]) !== this.iterations;
     }
 }
@@ -308,19 +305,19 @@ module.exports.SHA1PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
-            var hash_password = crypto.createHash('sha1').update(salt + password).digest("hex");
+            const salt = self.salt();
+            const hash_password = crypto.createHash('sha1').update(salt + password).digest("hex");
             resolve(self.algorithm + "$" + salt + "$" + hash_password);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var parts = hash_password.split('$');
-            var compare = self.algorithm + "$" + parts[1] + "$" +
+            const parts = hash_password.split('$');
+            const compare = self.algorithm + "$" + parts[1] + "$" +
                 crypto.createHash('sha1').update(parts[1] + password).digest("hex");
             resolve(compare === hash_password);
         });
@@ -340,18 +337,18 @@ module.exports.MD5PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
-            var hash_password = crypto.createHash('md5').update(password + salt).digest("hex");
+            const salt = self.salt();
+            const hash_password = crypto.createHash('md5').update(password + salt).digest("hex");
             resolve(self.algorithm + "$" + salt + "$" + hash_password);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var parts = hash_password.split('$');
+            const parts = hash_password.split('$');
             var compare = crypto.createHash('md5').update(password + parts[1]).digest("hex");
             compare = self.algorithm + "$" + parts[1] + "$" + compare;
             resolve(compare === hash_password);
@@ -372,18 +369,18 @@ module.exports.UnsaltedSHA1PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var salt = self.salt();
-            var hash_password = crypto.createHash('sha1').update(password + salt).digest("hex");
+            const salt = self.salt();
+            const hash_password = crypto.createHash('sha1').update(password + salt).digest("hex");
             resolve("sha1$$" + hash_password);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var compare = "sha1$$" + crypto.createHash('sha1').update(password + self.salt()).digest("hex");
+            const compare = "sha1$$" + crypto.createHash('sha1').update(password + self.salt()).digest("hex");
             resolve(compare === hash_password);
         });
     }
@@ -402,20 +399,20 @@ module.exports.UnsaltedMD5PasswordHasher = function() {
     }
 
     this.encode = function(password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
-            var hash_password = crypto.createHash('md5').update(password + self.salt()).digest("hex");
+            const hash_password = crypto.createHash('md5').update(password + self.salt()).digest("hex");
             resolve(hash_password);
         });
     }
 
     this.verify = function(password, hash_password) {
-        var self = this;
+        const self = this;
         return new Promise(function (resolve, reject) {
             if (hash_password.startsWith("md5$$") && hash_password.length === 37) {
                 hash_password = hash_password.substring(5, 37);
             }
-            var compare = crypto.createHash('md5').update(password + self.salt()).digest("hex");
+            const compare = crypto.createHash('md5').update(password + self.salt()).digest("hex");
             resolve(compare === hash_password);
         });
 
@@ -428,7 +425,7 @@ module.exports.UnsaltedMD5PasswordHasher = function() {
 
 
 function generateRandomString(length) {
-    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
