@@ -6,8 +6,8 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const argon2 = require('argon2-ffi').argon2i;
-const Promise = require('bluebird');
-const randomBytes = Promise.promisify(crypto.randomBytes);
+const util = require('util');
+const randomBytes = util.promisify(crypto.randomBytes);
 
 
 module.exports.mustUpdateHashedPassword = function(hash_password, default_algorithm) {
