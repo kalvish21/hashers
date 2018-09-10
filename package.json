@@ -1,6 +1,6 @@
 {
   "name": "node-django-hashers",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "dependencies": {
     "argon2-ffi": "^1.1.0",
     "assert": "^1.4.1",
