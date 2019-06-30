@@ -22,7 +22,7 @@ module.exports.mustUpdateHashedPassword = function(hash_password, default_algori
     }
 
     return true;
-}
+};
 
 
 module.exports.identifyHasher = function(hash_password) {
@@ -37,7 +37,7 @@ module.exports.identifyHasher = function(hash_password) {
         algorithm = hash_password.split('$')[0];
     }
     return algorithm;
-}
+};
 
 
 module.exports.getHasher = function(algorithm) {
@@ -86,7 +86,7 @@ module.exports.getHasher = function(algorithm) {
             return null;
         }
     }
-}
+};
 
 
 module.exports.Argon2PasswordHasher = function() {
@@ -136,7 +136,7 @@ module.exports.Argon2PasswordHasher = function() {
 
         return false;
     }
-}
+};
 
 
 module.exports.PBKDF2PasswordHasher = function() {
@@ -187,7 +187,7 @@ module.exports.PBKDF2PasswordHasher = function() {
         const parts = hash_password.split('$');
         return parseInt(parts[1]) !== this.iterations;
     }
-}
+};
 
 
 module.exports.PBKDF2SHA1PasswordHasher = function() {
@@ -228,7 +228,7 @@ module.exports.PBKDF2SHA1PasswordHasher = function() {
         const dk = crypto.pbkdf2Sync(key, salt, parseInt(iterations), dkLen, 'sha1');
         return dk;
     }
-}
+};
 
 
 module.exports.BCryptSHA256PasswordHasher = function() {
@@ -262,7 +262,7 @@ module.exports.BCryptSHA256PasswordHasher = function() {
         const parts = hash_password.split('$');
         return parseInt(parts[3]) !== this.iterations;
     }
-}
+};
 
 
 module.exports.BCryptPasswordHasher = function() {
@@ -294,7 +294,7 @@ module.exports.BCryptPasswordHasher = function() {
         const parts = hash_password.split('$');
         return parseInt(parts[3]) !== this.iterations;
     }
-}
+};
 
 
 module.exports.SHA1PasswordHasher = function() {
@@ -326,7 +326,7 @@ module.exports.SHA1PasswordHasher = function() {
     this.mustUpdate = function(hash_password) {
         return false;
     }
-}
+};
 
 
 module.exports.MD5PasswordHasher = function() {
@@ -358,7 +358,7 @@ module.exports.MD5PasswordHasher = function() {
     this.mustUpdate = function(hash_password) {
         return false;
     }
-}
+};
 
 
 module.exports.UnsaltedSHA1PasswordHasher = function() {
@@ -388,13 +388,13 @@ module.exports.UnsaltedSHA1PasswordHasher = function() {
     this.mustUpdate = function(hash_password) {
         return false;
     }
-}
+};
 
 
 module.exports.UnsaltedMD5PasswordHasher = function() {
     this.algorithm = "unsalted_md5";
 
-    this.salt = function() {
+    this.salt = () => {
         return '';
     }
 
@@ -421,7 +421,7 @@ module.exports.UnsaltedMD5PasswordHasher = function() {
     this.mustUpdate = function(hash_password) {
         return false;
     }
-}
+};
 
 
 function generateRandomString(length) {
@@ -429,7 +429,7 @@ function generateRandomString(length) {
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
-}
+};
 
 
 
