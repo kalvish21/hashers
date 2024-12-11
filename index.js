@@ -5,7 +5,6 @@
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const argon2 = require('argon2-ffi').argon2i;
 const util = require('util');
 const randomBytes = util.promisify(crypto.randomBytes);
 
@@ -50,10 +49,6 @@ module.exports.getHasher = function(algorithm) {
             return new this.PBKDF2PasswordHasher();
         }
 
-        case "argon2": {
-            return new this.Argon2PasswordHasher();
-        }
-
         case "pbkdf2_sha1": {
             return new this.PBKDF2SHA1PasswordHasher();
         }
@@ -87,57 +82,6 @@ module.exports.getHasher = function(algorithm) {
         }
     }
 };
-
-
-module.exports.Argon2PasswordHasher = function() {
-    this.algorithm = "argon2";
-    this.version = 19;
-    this.time_cost = 2;
-    this.memory_cost = 512;
-    this.parallelism_value = 2;
-    this.hash_length = 16;
-
-    this.salt = async function() {
-        return await randomBytes(32)
-    }
-
-    this.encode = async function(password) {
-        const options = {
-            timeCost: this.time_cost,
-            memoryCost: this.memory_cost,
-            parallelism: this.parallelism_value,
-            hashLength: this.hash_length
-        };
-
-        const salt = await this.salt();
-        const hash = await argon2.hash(password, salt, options);
-        return this.algorithm + hash;
-    }
-
-    this.verify = async function(password, hash_password) {
-        hash_password = hash_password.substring(this.algorithm.length, hash_password.length);
-        return await argon2.verify(hash_password, password);
-    }
-
-    this.mustUpdate = function(hash_password) {
-        const parts = hash_password.split('$');
-        if (parts[0] !== this.algorithm) {
-            return true;
-        }
-
-        if (parts[2] !== this.version) {
-            return true;
-        }
-
-        const options = "m=" + this.memory_cost + ",t=" + this.time_cost + ",p=" + this.parallelism_value;
-        if (options !== parts[3]) {
-            return true;
-        }
-
-        return false;
-    }
-};
-
 
 module.exports.PBKDF2PasswordHasher = function() {
     this.algorithm = "pbkdf2_sha256";

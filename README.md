@@ -11,7 +11,6 @@ All password hashing algorithms for Django implemented in javascript for nodejs 
 6. MD5PasswordHasher
 7. UnsaltedSHA1PasswordHasher
 8. UnsaltedMD5PasswordHasher
-9. Argon2PasswordHasher
 
 # Usage
 
